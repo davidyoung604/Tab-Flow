@@ -5,7 +5,8 @@
     "version": "0.2",
     
     "permissions": [
-    	"tabs"
+    	"tabs",
+    	"bookmarks"
     ],
     
     "browser_action": {
