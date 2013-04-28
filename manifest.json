@@ -1,0 +1,15 @@
+{
+    "manifest_version": 2,
+
+    "name": "Tabulator",
+    "version": "0.1",
+    
+    "permissions": [
+    	"tabs"
+    ],
+    
+    "browser_action": {
+        "default_title": "Tabulator",
+        "default_popup": "popup.html"
+    }
+}
