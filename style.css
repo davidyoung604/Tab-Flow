@@ -1,3 +1,9 @@
+body {
+	background: #ddd;
+	color: #000;
+	font-family: verdana;
+}
+
 div#windows {
 	width: 500px;
 }
