@@ -1,3 +1,4 @@
+var bookmarkFolderName = "Tabulator Bookmarks";
 var filter = "";
 var windowId;
 var window_div = document.getElementById("windows");
@@ -49,32 +50,49 @@ function updateTabList() {
 	}
 }
 
-function getBookmarkBarId(node_array) {
-	var bookmarkBarId = null;
-	for (i = 0; i < node_array.length; i++) {
-		if (node_array[i].title === "Bookmarks Bar") {
-			bookmarkBarId = node_array[i].id;
-			break;
+function parseNodesForTitle(nodeArray, searchTitle) {
+	for (i = 0; i < nodeArray.length; i++) {
+		if (nodeArray[i].title === searchTitle) {
+			return nodeArray[i].id;
 		}
-		
-		/* recurse to keep parsing through the tree */
-		chrome.bookmarks.getChildren(node_array[i].id, getBookmarkBarId);
 	}
-	
-	if (bookmarkBarId != null) {
+}
+
+function getBookmarkBarId(node_array) {
+	var bookmarkBarId = parseNodesForTitle(node_array, "Bookmarks Bar");
+	if (bookmarkBarId == null) {
+		/* recurse to keep parsing through the tree */
+		for (i = 0; i < node_array.length; i++) {
+			chrome.bookmarks.getChildren(node_array[i].id, getBookmarkBarId);
+		}
+	} else {
 		bookmarkFilteredTabs(bookmarkBarId);
 	}
 }
 
-function bookmarkFilteredTabs(bookmarkBarId_) {
-	var bookmarkParams = {
-		"parentId": bookmarkBarId_,
-		"title": "Tabulator Bookmarks"
-	};
-	
-	chrome.bookmarks.create(bookmarkParams);
+function addBookmarksToFolder(folderId) {
+	for (j = 0; j < filteredTabs.length; j++) {
+		var bookmark = {
+			"parentId": folderId,
+			"title": filteredTabs[j].title,
+			"url": filteredTabs[j].url
+		};
+		
+		chrome.bookmarks.create(bookmark);
+	}
 }
 
+function bookmarkFilteredTabs(bookmarkBarId_) {
+	chrome.bookmarks.create( { "parentId": bookmarkBarId_, "title": bookmarkFolderName } );
+}
+
+function bookmarkCreated(id, node) {
+	if (node.title === bookmarkFolderName) {
+		addBookmarksToFolder(id);
+	}
+}
+
+chrome.bookmarks.onCreated.addListener(bookmarkCreated);
 document.addEventListener("DOMContentLoaded", function() {
 	document.getElementById("filter").addEventListener("keyup", updateTabList);
 	document.getElementById("onlyCurrentWindow").addEventListener("click", updateTabList);
@@ -83,6 +101,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			chrome.bookmarks.getTree(getBookmarkBarId);
 		}
 	);
+	/* add listeners for bookmark creation/changes */
 	updateTabList();
 	document.getElementById("filter").focus();
 });
