@@ -83,11 +83,21 @@ function addBookmarksToFolder(folderId) {
 }
 
 function bookmarkFilteredTabs(bookmarkBarId_) {
-	chrome.bookmarks.create( { "parentId": bookmarkBarId_, "title": bookmarkFolderName } );
+	var d = new Date();
+	var dateString = d.getFullYear() + "-" + d.getMonth() + "-" + d.getDate();
+	dateString += " " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+	
+	chrome.bookmarks.create(
+		/* JSON */ {
+			"parentId": bookmarkBarId_,
+			"title": bookmarkFolderName + " " + dateString
+		}
+	);
 }
 
 function bookmarkCreated(id, node) {
-	if (node.title === bookmarkFolderName) {
+	/* starts with the folder name (because we append timestamps */
+	if (node.title.indexOf(bookmarkFolderName) == 0) {
 		addBookmarksToFolder(id);
 	}
 }
