@@ -5,12 +5,7 @@ var window_div = document.getElementById("windows");
 var filteredTabs = null;
 
 function windowHeader(num, win_id) {
-	if (win_id == windowId) {
-		isCurrent = " (current window)";
-	} else {
-		isCurrent = "";
-	}
-	
+	isCurrent = (win_id == windowId) ? " (current window)" : "";
 	return "<h3>Window " + num + isCurrent + "</h3>";
 }
 
@@ -72,13 +67,13 @@ function getBookmarkBarId(node_array) {
 
 function addBookmarksToFolder(folderId) {
 	for (j = 0; j < filteredTabs.length; j++) {
-		var bookmark = {
-			"parentId": folderId,
-			"title": filteredTabs[j].title,
-			"url": filteredTabs[j].url
-		};
-		
-		chrome.bookmarks.create(bookmark);
+		chrome.bookmarks.create(
+			{
+				"parentId": folderId,
+				"title": filteredTabs[j].title,
+				"url": filteredTabs[j].url
+			}
+		);
 	}
 }
 
@@ -88,7 +83,7 @@ function bookmarkFilteredTabs(bookmarkBarId_) {
 	dateString += " " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
 	
 	chrome.bookmarks.create(
-		/* JSON */ {
+		{
 			"parentId": bookmarkBarId_,
 			"title": bookmarkFolderName + " " + dateString
 		}
@@ -102,6 +97,7 @@ function bookmarkCreated(id, node) {
 	}
 }
 
+/* listeners */
 chrome.bookmarks.onCreated.addListener(bookmarkCreated);
 document.addEventListener("DOMContentLoaded", function() {
 	document.getElementById("filter").addEventListener("keyup", updateTabList);
@@ -111,7 +107,6 @@ document.addEventListener("DOMContentLoaded", function() {
 			chrome.bookmarks.getTree(getBookmarkBarId);
 		}
 	);
-	/* add listeners for bookmark creation/changes */
 	updateTabList();
 	document.getElementById("filter").focus();
 });
