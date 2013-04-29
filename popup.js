@@ -10,13 +10,12 @@ function windowHeader(num, win_id) {
 }
 
 function printTabs(tab_array) {
-	var re = new RegExp(filter, "gi");
-	
+	var re = new RegExp(filter, "i");
 	for (tab_index = 0; tab_index < tab_array.length; tab_index++) {
-		var url = tab_array[tab_index].url;
-		if ( re.test(url) ) {
-			filteredTabs.push(tab_array[tab_index]);
-			window_div.innerHTML += url + "<br />";
+		var tab = tab_array[tab_index];
+		if ( re.test(tab.url) ) {
+			filteredTabs.push(tab);
+			window_div.innerHTML += tab.url + "<br />";
 		}
 	}
 }
