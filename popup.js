@@ -144,12 +144,16 @@ function moveTabsToWindow(window) {
 	/* start at i=1 because we needed the first tab to
 	   open the window without the "new tab" page */
 	for (i = 1; i < ids.length; i++) {
-		chrome.tabs.move( ids[i], moveProperties );
+		chrome.tabs.move( ids[i], moveProperties, function () {
+			updateTabList();
+		} );
 	}
 }
 
 function closeTabs() {
-	chrome.tabs.remove( getIDs(filteredTabs) );
+	chrome.tabs.remove( getIDs(filteredTabs), function () {
+		updateTabList();
+	} );
 }
 
 /* listeners */
