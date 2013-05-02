@@ -1,3 +1,20 @@
+/********************************************************
+ * Project   : TabYouLater (Tabulator)
+ * Author    : David Young
+ * Date      : May 1, 2013
+ * Copyright : All rights reserved.
+ * Licence   : Feel free to make changes for yourself,
+ *             but you are not permitted to release anything
+ *             based on my code. You're encouraged to send
+ *             a pull request, however, and you'll receive
+ *             credit for any enhancements I include.
+ ********************************************************/
+ 
+/*
+ * TODO: add deletion
+ * TODO: add moving to new window
+ */
+
 var bookmarkFolderName = "Tabulator Bookmarks";
 var filter = "";
 var windowId;
