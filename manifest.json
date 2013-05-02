@@ -1,8 +1,8 @@
 {
     "manifest_version": 2,
 
-    "name": "Tabulator",
-    "version": "0.3",
+    "name": "TabYouLater",
+    "version": "0.4",
     
     "permissions": [
     	"tabs",
@@ -10,7 +10,7 @@
     ],
     
     "browser_action": {
-        "default_title": "Tabulator",
+        "default_title": "TabYouLater",
         "default_popup": "popup.html"
     }
 }
