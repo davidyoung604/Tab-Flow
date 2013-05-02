@@ -10,12 +10,9 @@
  *             credit for any enhancements I include.
  ********************************************************/
  
-/*
- * TODO: add deletion
- * TODO: add moving to new window
- */
+ /* TODO: add feedback for the user */
 
-var bookmarkFolderName = "Tabulator Bookmarks";
+var bookmarkFolderName = "TabYouLater Bookmarks";
 var filter = "";
 var windowId;
 var window_div = document.getElementById("windows");
@@ -83,34 +80,76 @@ function getBookmarkBarId(node_array) {
 
 function addBookmarksToFolder(folderId) {
 	for (j = 0; j < filteredTabs.length; j++) {
-		chrome.bookmarks.create(
-			{
-				"parentId": folderId,
-				"title": filteredTabs[j].title,
-				"url": filteredTabs[j].url
-			}
-		);
+		chrome.bookmarks.create( {
+			"parentId" : folderId,
+			"title"    : filteredTabs[j].title,
+			"url"      : filteredTabs[j].url
+		} );
 	}
+}
+
+function pad(n) {
+	return (n > 9) ? n : "0" + n;
+}
+
+function getFormattedDate(d) {
+	if ( !(d instanceof Date) ) { /* damn noobs */
+		d = new Date();
+	}
+	
+	var str = d.getFullYear() + "-" +
+		pad( d.getMonth()+1 ) + "-" + /* months go from 0-11. derp. */
+		pad( d.getDate() );
+	str += " " +
+		pad( d.getHours() ) + ":" +
+		pad( d.getMinutes() ) + ":" +
+		pad( d.getSeconds() );
+	
+	return str;
 }
 
 function bookmarkFilteredTabs(bookmarkBarId_) {
-	var d = new Date();
-	var dateString = d.getFullYear() + "-" + d.getMonth() + "-" + d.getDate();
-	dateString += " " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+	var dateString = getFormattedDate( new Date() );
 	
-	chrome.bookmarks.create(
-		{
-			"parentId": bookmarkBarId_,
-			"title": bookmarkFolderName + " " + dateString
-		}
-	);
+	chrome.bookmarks.create( {
+		"parentId" : bookmarkBarId_,
+		"title"    : bookmarkFolderName + " " + dateString
+	} );
 }
 
 function bookmarkCreated(id, node) {
-	/* starts with the folder name (because we append timestamps */
+	/* starts with the folder name (because we append timestamps) */
 	if (node.title.indexOf(bookmarkFolderName) == 0) {
 		addBookmarksToFolder(id);
 	}
+}
+
+function getIDs() {
+	var ids = Array();
+	
+	for (i = 0; i < filteredTabs.length; i++) {
+		ids.push( filteredTabs[i].id );
+	}
+	
+	return ids;
+}
+
+function moveTabsToWindow(window) {
+	var ids = getIDs(filteredTabs);
+	var moveProperties = {
+		"windowId" : window.id,
+		"index"    : -1
+	};
+	
+	/* start at i=1 because we needed the first tab to
+	   open the window without the "new tab" page */
+	for (i = 1; i < ids.length; i++) {
+		chrome.tabs.move( ids[i], moveProperties );
+	}
+}
+
+function closeTabs() {
+	chrome.tabs.remove( getIDs(filteredTabs) );
 }
 
 /* listeners */
@@ -118,11 +157,23 @@ chrome.bookmarks.onCreated.addListener(bookmarkCreated);
 document.addEventListener("DOMContentLoaded", function() {
 	document.getElementById("filter").addEventListener("keyup", updateTabList);
 	document.getElementById("onlyCurrentWindow").addEventListener("click", updateTabList);
-	document.getElementById("bookmarkButton").addEventListener("click",
-		function () {
-			chrome.bookmarks.getTree(getBookmarkBarId);
-		}
-	);
 	updateTabList();
-	document.getElementById("filter").focus();
+	
+	document.getElementById("bookmark").addEventListener("click", function () {
+		if (filteredTabs.length == 0) { return; }
+		chrome.bookmarks.getTree(getBookmarkBarId);
+	} );
+	
+	document.getElementById("move").addEventListener("click", function () {
+		if (filteredTabs.length == 0) { return; }
+		chrome.windows.create( {
+			"focused" : false,
+			"tabId"   : filteredTabs[0].id
+		}, moveTabsToWindow);
+	} );
+	
+	document.getElementById("close").addEventListener("click", function () {
+		if (filteredTabs.length == 0) { return; }
+		closeTabs();
+	} );
 });
