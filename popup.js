@@ -158,6 +158,7 @@ function closeTabs() {
 
 /* listeners */
 chrome.bookmarks.onCreated.addListener(bookmarkCreated);
+
 document.addEventListener("DOMContentLoaded", function() {
 	document.getElementById("filter").addEventListener("keyup", updateTabList);
 	document.getElementById("onlyCurrentWindow").addEventListener("click", updateTabList);
