@@ -1,7 +1,8 @@
 body {
 	background: #eee;
 	color: #333;
-	font-family: verdana;
+	font-family: Monda, Verdana;
+	font-size: 11pt;
 }
 
 a {
@@ -12,10 +13,6 @@ a {
 a:hover {
 	color: #333;
 	text-decoration: underline;
-}
-
-h3 {
-	font-family: arial;
 }
 
 div#windows {
