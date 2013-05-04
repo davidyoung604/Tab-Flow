@@ -9,33 +9,33 @@
  *             to send me a pull request on GitHub, and you'll
  *             receive credit for any enhancements I include.
  ********************************************************/
- 
- /* TODO: add feedback for the user */
 
-var bookmarkFolderName = "TabYouLater Bookmarks";
-var filter = "";
-var windowId;
-var window_div = document.getElementById("windows");
-var filteredTabs = null;
-var allTabs = null;
+var BOOKMARK_FOLDER_NAME = "TabYouLater Bookmarks";
+var WINDOW_DIV = document.getElementById("windows");
+var FEEDBACK_DIV = document.getElementById("feedback");
 
-function windowHeader(num, win_id) {
-	isCurrent = (win_id == windowId) ? " (current window)" : "";
+function setFeedbackText(text) {
+	FEEDBACK_DIV.innerHTML = text;
+}
+
+function windowHeader(num, winId) {
+	isCurrent = (winId == currentWindowId) ? " (current window)" : "";
 	return "<h3>Window " + num + isCurrent + "</h3>";
 }
 
-function tabLink(tab) {
-	return "<a href='#' id='" + tab.id + "'>" + tab.url + "</a>";
+function tabLink(tabId, tabText) {
+	return "<a href='#' id='" + tabId + "'>" + tabText + "</a>";
 }
 
-function printTabs(tab_array) {
+function printTabs(tabArray) {
 	var re = new RegExp(filter, "i");
 	
-	for (tab_index = 0; tab_index < tab_array.length; tab_index++) {
-		var tab = tab_array[tab_index];
-		if ( re.test(tab.url) ) {
+	for (tabIndex = 0; tabIndex < tabArray.length; tabIndex++) {
+		var tab = tabArray[tabIndex];
+		var field = useURLs ? tab.url : tab.title;
+		if ( re.test(field) ) {
 			filteredTabs.push(tab);
-			window_div.innerHTML += tabLink(tab) + "<br />";
+			WINDOW_DIV.innerHTML += tabLink(tab.id, field) + "<br />";
 		}
 	}
 	
@@ -44,13 +44,14 @@ function printTabs(tab_array) {
 
 function listTabs(windows) {
 	var onlyCurrent = document.getElementById("onlyCurrentWindow").checked;
-	filteredTabs = []; /* reset the list of tabs */
+	useURLs = document.getElementById("useURLs").checked;
+	filteredTabs = [];
 	allTabs = [];
 	
-	for (win_index = 0; win_index < windows.length; win_index++) {
-		var window = windows[win_index];
-		if (onlyCurrent && window.id != windowId) { continue; }
-		window_div.innerHTML += windowHeader(win_index, window.id);
+	for (winIndex = 0; winIndex < windows.length; winIndex++) {
+		var window = windows[winIndex];
+		if (onlyCurrent && window.id != currentWindowId) { continue; }
+		WINDOW_DIV.innerHTML += windowHeader(winIndex, window.id);
 		printTabs(window.tabs);
 	}
 	
@@ -65,9 +66,11 @@ function listTabs(windows) {
 
 function updateTabList() {
 	filter = document.getElementById("filter").value;
-	document.getElementById("windows").innerHTML = "";
+	FEEDBACK_DIV.innerHTML = "";
+	WINDOW_DIV.innerHTML = "";
+	
 	chrome.windows.getCurrent( function (window) {
-		windowId = window.id;
+		currentWindowId = window.id;
 		chrome.windows.getAll( { "populate": true }, listTabs );
 	} );
 }
@@ -80,12 +83,12 @@ function parseNodesForTitle(nodeArray, searchTitle) {
 	}
 }
 
-function getBookmarkBarId(node_array) {
-	var bookmarkBarId = parseNodesForTitle(node_array, "Bookmarks Bar");
+function getBookmarkBarId(nodeArray) {
+	var bookmarkBarId = parseNodesForTitle(nodeArray, "Bookmarks Bar");
 	if (bookmarkBarId == null) {
 		/* recurse to keep parsing through the tree */
-		for (i = 0; i < node_array.length; i++) {
-			chrome.bookmarks.getChildren(node_array[i].id, getBookmarkBarId);
+		for (i = 0; i < nodeArray.length; i++) {
+			chrome.bookmarks.getChildren(nodeArray[i].id, getBookmarkBarId);
 		}
 	} else {
 		bookmarkFilteredTabs(bookmarkBarId);
@@ -122,19 +125,20 @@ function getFormattedDate(d) {
 	return str;
 }
 
-function bookmarkFilteredTabs(bookmarkBarId_) {
+function bookmarkFilteredTabs(bookmarkBarId) {
 	var dateString = getFormattedDate( new Date() );
 	
 	chrome.bookmarks.create( {
-		"parentId" : bookmarkBarId_,
-		"title"    : bookmarkFolderName + " " + dateString
+		"parentId" : bookmarkBarId,
+		"title"    : BOOKMARK_FOLDER_NAME + " " + dateString
 	} );
 }
 
 function bookmarkCreated(id, node) {
 	/* starts with the folder name (because we append timestamps) */
-	if (node.title.indexOf(bookmarkFolderName) == 0) {
+	if (node.title.indexOf(BOOKMARK_FOLDER_NAME) == 0) {
 		addBookmarksToFolder(id);
+		setFeedbackText(filteredTabs.length + " tabs bookmarked");
 	}
 }
 
@@ -151,7 +155,7 @@ function getIDs() {
 function moveTabsToWindow(window) {
 	var ids = getIDs(filteredTabs);
 	var moveProperties = {
-		"windowId" : window.id,
+		"currentWindowId" : window.id,
 		"index"    : -1
 	};
 	
@@ -167,6 +171,7 @@ function moveTabsToWindow(window) {
 function closeTabs() {
 	chrome.tabs.remove( getIDs(filteredTabs), function () {
 		updateTabList();
+		setFeedbackText(filteredTabs.length + " tabs closed");
 	} );
 }
 
@@ -176,6 +181,7 @@ chrome.bookmarks.onCreated.addListener(bookmarkCreated);
 document.addEventListener("DOMContentLoaded", function() {
 	document.getElementById("filter").addEventListener("keyup", updateTabList);
 	document.getElementById("onlyCurrentWindow").addEventListener("click", updateTabList);
+	document.getElementById("useURLs").addEventListener("click", updateTabList);
 	updateTabList();
 	
 	document.getElementById("bookmark").addEventListener("click", function () {

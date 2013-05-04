@@ -5,9 +5,9 @@
  * Copyright : All rights reserved.
  * Licence   : Feel free to make changes for yourself,
  *             but you are not permitted to release anything
- *             based on my code. You're encouraged to send
- *             a pull request, however, and you'll receive
- *             credit for any enhancements I include.
+ *             based on my code. However, you're encouraged
+ *             to send me a pull request on GitHub, and you'll
+ *             receive credit for any enhancements I include.
  ********************************************************/
 
 var tabCount = 0;

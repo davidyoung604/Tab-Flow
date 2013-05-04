@@ -1,4 +1,16 @@
-body {
+/********************************************************
+ * Project   : TabYouLater (Tabulator)
+ * Author    : David Young
+ * Date      : May 1, 2013
+ * Copyright : All rights reserved.
+ * Licence   : Feel free to make changes for yourself,
+ *             but you are not permitted to release anything
+ *             based on my code. However, you're encouraged
+ *             to send me a pull request on GitHub, and you'll
+ *             receive credit for any enhancements I include.
+ ********************************************************/
+ 
+ body {
 	background: #eee;
 	color: #333;
 	font-family: Monda, Verdana;
@@ -21,4 +33,11 @@ div#windows {
 
 form {
 	text-align: right;
+}
+
+div#feedback {
+	font-size: 14pt;
+	position: absolute;
+	top: 40px;
+	left: 20px;
 }
