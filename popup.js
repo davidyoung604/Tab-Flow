@@ -5,9 +5,9 @@
  * Copyright : All rights reserved.
  * Licence   : Feel free to make changes for yourself,
  *             but you are not permitted to release anything
- *             based on my code. You're encouraged to send
- *             a pull request, however, and you'll receive
- *             credit for any enhancements I include.
+ *             based on my code. However, you're encouraged
+ *             to send me a pull request on GitHub, and you'll
+ *             receive credit for any enhancements I include.
  ********************************************************/
  
  /* TODO: add feedback for the user */
@@ -23,13 +23,17 @@ function windowHeader(num, win_id) {
 	return "<h3>Window " + num + isCurrent + "</h3>";
 }
 
+function tabLink(tab) {
+	return "<a href='#' id='" + tab.id + "'>" + tab.url + "</a>";
+}
+
 function printTabs(tab_array) {
 	var re = new RegExp(filter, "i");
 	for (tab_index = 0; tab_index < tab_array.length; tab_index++) {
 		var tab = tab_array[tab_index];
 		if ( re.test(tab.url) ) {
 			filteredTabs.push(tab);
-			window_div.innerHTML += tab.url + "<br />";
+			window_div.innerHTML += tabLink(tab) + "<br />";
 		}
 	}
 }
