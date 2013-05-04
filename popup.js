@@ -17,6 +17,7 @@ var filter = "";
 var windowId;
 var window_div = document.getElementById("windows");
 var filteredTabs = null;
+var allTabs = null;
 
 function windowHeader(num, win_id) {
 	isCurrent = (win_id == windowId) ? " (current window)" : "";
@@ -29,6 +30,7 @@ function tabLink(tab) {
 
 function printTabs(tab_array) {
 	var re = new RegExp(filter, "i");
+	
 	for (tab_index = 0; tab_index < tab_array.length; tab_index++) {
 		var tab = tab_array[tab_index];
 		if ( re.test(tab.url) ) {
@@ -36,30 +38,38 @@ function printTabs(tab_array) {
 			window_div.innerHTML += tabLink(tab) + "<br />";
 		}
 	}
+	
+	allTabs = allTabs.concat(filteredTabs);
 }
 
 function listTabs(windows) {
+	var onlyCurrent = document.getElementById("onlyCurrentWindow").checked;
+	filteredTabs = []; /* reset the list of tabs */
+	allTabs = [];
+	
 	for (win_index = 0; win_index < windows.length; win_index++) {
-		window_div.innerHTML += windowHeader(win_index, windows[win_index].id);
-		printTabs(windows[win_index].tabs);
+		var window = windows[win_index];
+		if (onlyCurrent && window.id != windowId) { continue; }
+		window_div.innerHTML += windowHeader(win_index, window.id);
+		printTabs(window.tabs);
 	}
-}
-
-function retrieveCurrentWindowId(window) {
-	windowId = window.id;
+	
+	/* iterate through again to add the listeners (innerHTML append wipes it out) */
+	for (i = 0; i < allTabs.length; i++) {
+		var tab = allTabs[i];
+		document.getElementById("" + tab.id).addEventListener("click", function (e) {
+			chrome.tabs.update( parseInt(e.target.id), { "active": true } );
+		} );
+	}
 }
 
 function updateTabList() {
-	document.getElementById("windows").innerHTML = "";
 	filter = document.getElementById("filter").value;
-	chrome.windows.getCurrent(retrieveCurrentWindowId);
-	filteredTabs = [];
-	
-	if (document.getElementById("onlyCurrentWindow").checked) {
-		chrome.tabs.getAllInWindow(windowId, printTabs);
-	} else {
+	document.getElementById("windows").innerHTML = "";
+	chrome.windows.getCurrent( function (window) {
+		windowId = window.id;
 		chrome.windows.getAll( { "populate": true }, listTabs );
-	}
+	} );
 }
 
 function parseNodesForTitle(nodeArray, searchTitle) {
