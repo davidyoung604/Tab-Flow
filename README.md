@@ -1,7 +1,7 @@
 Tab Flow: The path of least resistance
 ======================================
 
-*Tab Flow* is an extension for Google Chrome which allows you to search by website or page title for tabs, and then to bookmark them, move them to a new window, or close them.
+*Tab Flow* is an extension for Google Chrome which allows you to better manage your open tabs.
 
 Installation
 ------------
