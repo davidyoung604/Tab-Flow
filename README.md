@@ -1,7 +1,7 @@
 Tab Flow: The path of least resistance
 ======================================
 
-*Tab Flow* is an extension for Google Chrome which allows you to better manage your open tabs.
+*Tab Flow* is an extension for Google Chrome that allows you to better manage your open tabs.
 
 Installation
 ------------
