@@ -13,16 +13,16 @@ Until I can get a logo/icon made and put this in the Chrome Store, follow these 
 
 Usage
 -----
-- type something into the search box (e.g. youtube) to filter by all tabs that mention "youtube"
-    - don't worry about capitalization
-- if you want to search by the URL instead of the title, check the box for "Use URLs"
-- if you click the link of a tab, you'll be redirected to that tab
-- clicking "Bookmark" will bookmark the current list of tabs into a new folder on the Bookmark Bar
-    - the new folder will have the current date and time to keep things separated
-- clicking "Move" will move the current list of tabs to a new window
-    - this is handy for keeping work/school/personal life separate
-- clicking "Close" will (of course) close the current list of tabs
-    - there's no "Re-Open" button, so be sure you want to close them
+- Type something into the search box (e.g. youtube) to filter by all tabs that mention "youtube"
+    - Don't worry about capitalization
+- If you want to search by the URL instead of the title, check the box for "Use URLs"
+- If you click the link of a tab, you'll be redirected to that tab
+- Clicking "Bookmark" will bookmark the current list of tabs into a new folder on the Bookmark Bar
+    - The new folder will have the current date and time to keep things separated
+- Clicking "Move" will move the current list of tabs to a new window
+    - This is handy for keeping work/school/personal life separate
+- Clicking "Close" will (of course) close the current list of tabs
+    - There's no "Re-Open" button, so be sure you want to close them
 
 Notes
 -----
