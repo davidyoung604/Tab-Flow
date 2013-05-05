@@ -8,9 +8,9 @@ Installation
 Until I can get a logo/icon made and put this in the Chrome Store, follow these instructions:
 
 1. Download the .crx file from here
-    1.1. Click the link for "Tab Flow.crx"
-	1.2. Click the link for "View Raw"
-	1.3. Save the file somewhere you can find it easily
+    1. Click the link for "Tab Flow.crx"
+	2. Click the link for "View Raw"
+	3. Save the file somewhere you can find it easily
 2. Open the Extensions page in Google Chrome (Settings -> Extensions)
 3. Drag the file from where you saved it into the Extensions window and click "Add" when prompted
 
