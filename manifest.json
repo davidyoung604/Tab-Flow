@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
 
-    "name": "TabYouLater",
+    "name": "Tab Flow",
     "version": "0.7.1",
     
     "permissions": [
@@ -10,7 +10,7 @@
     ],
     
     "browser_action": {
-        "default_title": "TabYouLater",
+        "default_title": "Tab Flow",
         "default_popup": "popup.html"
     },
     

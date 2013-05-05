@@ -1,13 +1,11 @@
 /********************************************************
- * Project   : TabYouLater (Tabulator)
+ * Project   : Tab Flow
  * Author    : David Young
  * Date      : May 1, 2013
  * Copyright : All rights reserved.
- * Licence   : Feel free to make changes for yourself,
+ * Licence   : Feel free to make changes for your own use,
  *             but you are not permitted to release anything
- *             based on my code. However, you're encouraged
- *             to send me a pull request on GitHub, and you'll
- *             receive credit for any enhancements I include.
+ *             based on my code in whole or in part.
  ********************************************************/
 
 var tabCount = 0;
