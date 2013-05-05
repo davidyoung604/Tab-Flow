@@ -140,30 +140,18 @@ function bookmarkCreated(id, node) {
 	}
 }
 
-function getIDs() {
+function getIDs(nodeArray) {
 	var ids = Array();
 	
-	for (i = 0; i < filteredTabs.length; i++) {
-		ids.push( filteredTabs[i].id );
+	for (i = 0; i < nodeArray.length; i++) {
+		ids.push( nodeArray[i].id );
 	}
 	
 	return ids;
 }
 
 function moveTabsToWindow(window) {
-	var ids = getIDs(filteredTabs);
-	var moveProperties = {
-		"currentWindowId" : window.id,
-		"index"    : -1
-	};
-	
-	/* start at i=1 because we needed the first tab to
-	   open the window without the "new tab" page */
-	for (i = 1; i < ids.length; i++) {
-		chrome.tabs.move( ids[i], moveProperties, function () {
-			updateTabList();
-		} );
-	}
+	chrome.tabs.move( getIDs(filteredTabs), { "windowId": window.id, "index": -1 } );
 }
 
 function closeTabs() {
