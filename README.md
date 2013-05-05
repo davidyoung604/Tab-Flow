@@ -3,6 +3,17 @@ Tab Flow: The path of least resistance
 
 *Tab Flow* is an extension for Google Chrome which allows you to search by website or page title for tabs, and then to bookmark them, move them to a new window, or close them.
 
+Installation
+------------
+Until I can get a logo/icon made and put this in the Chrome Store, follow these instructions:
+
+1. Download the .crx file from here
+    1.1. Click the link for "Tab Flow.crx"
+	1.2. Click the link for "View Raw"
+	1.3. Save the file somewhere you can find it easily
+2. Open the Extensions page in Google Chrome (Settings -> Extensions)
+3. Drag the file from where you saved it into the Extensions window and click "Add" when prompted
+
 Usage
 -----
 - type something into the search box (e.g. youtube) to filter by all tabs that mention "youtube"
