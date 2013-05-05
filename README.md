@@ -7,10 +7,7 @@ Installation
 ------------
 Until I can get a logo/icon made and put this in the Chrome Store, follow these instructions:
 
-1. Download the .crx file from here
-    1. Click the link for "Tab Flow.crx"
-	2. Click the link for "View Raw"
-	3. Save the file somewhere you can find it easily
+1. Download the .crx file from [here](https://github.com/davidyoung604/Tab-Flow/blob/master/Tab%20Flow.crx?raw=true) and save the file somewhere you can find it easily
 2. Open the Extensions page in Google Chrome (Settings -> Extensions)
 3. Drag the file from where you saved it into the Extensions window and click "Add" when prompted
 
@@ -26,4 +23,9 @@ Usage
     - this is handy for keeping work/school/personal life separate
 - clicking "Close" will (of course) close the current list of tabs
     - there's no "Re-Open" button, so be sure you want to close them
+
+Notes
+-----
+- The number on the icon is the number of open tabs you have across all open windows.
+- If you find a bug or have a feature request, please post it in the [Issues](https://github.com/davidyoung604/Tab-Flow/issues) section so we can keep things organized.
 
