@@ -9,33 +9,33 @@
  ********************************************************/
  
  body {
-	background: #eee;
-	color: #333;
-	font-family: Monda, Verdana;
-	font-size: 11pt;
+    background: #eee;
+    color: #333;
+    font-family: Monda, Verdana;
+    font-size: 11pt;
 }
 
 a {
-	color: #0077ff;
-	text-decoration: none;
+    color: #0077ff;
+    text-decoration: none;
 }
 
 a:hover {
-	color: #333;
-	text-decoration: underline;
+    color: #333;
+    text-decoration: underline;
 }
 
 div#windows {
-	width: 500px;
+    width: 500px;
 }
 
 form {
-	text-align: right;
+    text-align: right;
 }
 
 div#feedback {
-	font-size: 14pt;
-	position: absolute;
-	top: 40px;
-	left: 20px;
+    font-size: 14pt;
+    position: absolute;
+    top: 40px;
+    left: 20px;
 }

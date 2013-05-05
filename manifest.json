@@ -5,8 +5,8 @@
     "version": "0.7.2",
     
     "permissions": [
-    	"tabs",
-    	"bookmarks"
+        "tabs",
+        "bookmarks"
     ],
     
     "browser_action": {
@@ -15,6 +15,6 @@
     },
     
     "background": {
-    	"scripts": [ "background.js" ]
+        "scripts": [ "background.js" ]
     }
 }

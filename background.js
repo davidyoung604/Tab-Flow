@@ -11,22 +11,22 @@
 var tabCount = 0;
 
 function printBadge(badgeText) {
-	chrome.browserAction.setBadgeText( { "text": badgeText } );
+    chrome.browserAction.setBadgeText( { "text": badgeText } );
 }
 
 chrome.windows.getAll( { "populate": true }, function (windows) {
-	for (i = 0; i < windows.length; i++) {
-		tabCount += windows[i].tabs.length;
-	}
-	
-	printBadge("" + tabCount);
+    for (i = 0; i < windows.length; i++) {
+        tabCount += windows[i].tabs.length;
+    }
+    
+    printBadge("" + tabCount);
 } );
 
 chrome.tabs.onCreated.addListener( function (a) {
-	tabCount++;
-	printBadge("" + tabCount);
+    tabCount++;
+    printBadge("" + tabCount);
 } );
 chrome.tabs.onRemoved.addListener( function (a, b) {
-	tabCount--;
-	printBadge("" + tabCount);
+    tabCount--;
+    printBadge("" + tabCount);
 } );
