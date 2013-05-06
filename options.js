@@ -9,8 +9,8 @@
  ********************************************************/
  
  document.addEventListener("DOMContentLoaded", function() {
-    var showBadge = localStorage["showBadge"];
-    var defaultURLs = localStorage["defaultURLs"];
+    var showBadge = localStorage["showBadge"] || "true";
+    var defaultURLs = localStorage["defaultURLs"] || "false";
     var showBadgeBox = document.getElementById("showBadge");
     var defaultURLsBox = document.getElementById("defaultURLs");
     
