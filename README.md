@@ -5,11 +5,7 @@ Tab Flow: The path of least resistance
 
 Installation
 ------------
-Until I can get a logo/icon made and put this in the Chrome Store, follow these instructions:
-
-1. Download the .crx file from [here](https://github.com/davidyoung604/Tab-Flow/blob/master/Tab%20Flow.crx?raw=true) and save the file somewhere you can find it easily
-2. Open the Extensions page in Google Chrome (Settings -> Extensions)
-3. Drag the file from where you saved it into the Extensions window and click "Add" when prompted
+Grab it from the Google Chrome store!
 
 Usage
 -----
