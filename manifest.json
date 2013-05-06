@@ -9,9 +9,18 @@
         "bookmarks"
     ],
     
+    "icons": {
+        "48" : "images/Tab Flow (48px).png",
+        "128": "images/Tab Flow (128px).png"
+    },
+    
     "browser_action": {
         "default_title": "Tab Flow",
-        "default_popup": "popup.html"
+        "default_popup": "popup.html",
+        "default_icon" : {
+            "19"  : "images/Tab Flow (19px).png",
+            "38"  : "images/Tab Flow (38px).png"
+        }
     },
     
     "background": {
