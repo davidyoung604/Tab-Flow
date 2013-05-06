@@ -165,6 +165,9 @@ function closeTabs() {
 chrome.bookmarks.onCreated.addListener(bookmarkCreated);
 
 document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("useURLs").checked =
+        ( localStorage["defaultURLs"].toLowerCase().indexOf("true") == 0 );
+    
     document.getElementById("filter").addEventListener("keyup", updateTabList);
     document.getElementById("onlyCurrentWindow").addEventListener("click", updateTabList);
     document.getElementById("useURLs").addEventListener("click", updateTabList);

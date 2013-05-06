@@ -11,6 +11,10 @@
 var tabCount = 0;
 
 function printBadge(badgeText) {
+    if ( localStorage["showBadge"].toLowerCase().indexOf("true") != 0 ) {
+        badgeText = "";
+    }
+    
     chrome.browserAction.setBadgeText( { "text": badgeText } );
 }
 
