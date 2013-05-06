@@ -5,7 +5,7 @@ Tab Flow: The path of least resistance
 
 Installation
 ------------
-Grab it from the Google Chrome store!
+Grab it from the [Google Chrome store](http://goo.gl/v0b5v)!
 
 Usage
 -----
