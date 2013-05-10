@@ -40,6 +40,21 @@ function printTabs(tabArray) {
     allTabs = allTabs.concat(filteredTabs);
 }
 
+function restoreWindowContainingTab( tabId, windows ) {
+    for (var winIndex = 0; winIndex < windows.length; winIndex++) {
+        var tabs = windows[winIndex].tabs;
+        for (var tabIndex = 0; tabIndex < tabs.length; tabIndex++) {
+            if (tabs[tabIndex].id == tabId) {
+                chrome.windows.update(
+                    windows[winIndex].id,
+                    { "focused": true },
+                    chrome.tabs.update( parseInt(tabId), { "active": true } )
+                );
+            }
+        }
+    }
+} 
+
 function listTabs(windows) {
     var onlyCurrent = document.getElementById("onlyCurrentWindow").checked;
     useURLs = document.getElementById("useURLs").checked;
@@ -57,7 +72,7 @@ function listTabs(windows) {
     for (i = 0; i < allTabs.length; i++) {
         var tab = allTabs[i];
         document.getElementById("" + tab.id).addEventListener("click", function (e) {
-            chrome.tabs.update( parseInt(e.target.id), { "active": true } );
+            restoreWindowContainingTab(e.target.id, windows);
         } );
     }
 }
