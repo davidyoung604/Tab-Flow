@@ -206,4 +206,8 @@ document.addEventListener("DOMContentLoaded", function() {
         if (filteredTabs.length == 0) { return; }
         closeTabs();
     } );
+    
+    window.setTimeout( function() {
+        document.getElementById("filter").focus();
+    }, 500 );
 });
