@@ -40,19 +40,16 @@ function printTabs(tabArray) {
     allTabs = allTabs.concat(filteredTabs);
 }
 
-function restoreWindowContainingTab( tabId, windows ) {
-    for (var winIndex = 0; winIndex < windows.length; winIndex++) {
-        var tabs = windows[winIndex].tabs;
-        for (var tabIndex = 0; tabIndex < tabs.length; tabIndex++) {
-            if (tabs[tabIndex].id == tabId) {
-                chrome.windows.update(
-                    windows[winIndex].id,
-                    { "focused": true },
-                    chrome.tabs.update( parseInt(tabId, 10), { "active": true } )
-                );
-            }
-        }
-    }
+function restoreTabFromClickEvent(event) {
+    var id = parseInt(event.target.id, 10);
+    
+    chrome.tabs.get( id, function(tab) {
+        chrome.windows.update(
+            tab.windowId,
+            { "focused": true },
+            chrome.tabs.update( id, { "active": true } )
+        );
+    } );
 }
 
 function listTabs(windows) {
@@ -71,9 +68,7 @@ function listTabs(windows) {
     /* iterate through again to add the listeners (innerHTML append wipes it out) */
     for (i = 0; i < allTabs.length; i++) {
         var tab = allTabs[i];
-        document.getElementById("" + tab.id).addEventListener("click", function (e) {
-            restoreWindowContainingTab(e.target.id, windows);
-        } );
+        document.getElementById("" + tab.id).addEventListener("click", restoreTabFromClickEvent );
     }
 }
 
@@ -98,7 +93,7 @@ function parseNodesForTitle(nodeArray, searchTitle) {
 
 function getBookmarkBarId(nodeArray) {
     var bookmarkBarId = parseNodesForTitle(nodeArray, "Bookmarks Bar");
-    if (bookmarkBarId === null) {
+    if (bookmarkBarId === null || bookmarkBarId === undefined) {
         /* recurse to keep parsing through the tree */
         for (i = 0; i < nodeArray.length; i++) {
             chrome.bookmarks.getChildren(nodeArray[i].id, getBookmarkBarId);
@@ -108,7 +103,8 @@ function getBookmarkBarId(nodeArray) {
     }
 }
 
-function addBookmarksToFolder(folderId) {
+function addBookmarksToFolder(bookmarkNode) {
+    var folderId = bookmarkNode.id;
     for (j = 0; j < filteredTabs.length; j++) {
         chrome.bookmarks.create( {
             "parentId" : folderId,
@@ -116,6 +112,8 @@ function addBookmarksToFolder(folderId) {
             "url"      : filteredTabs[j].url
         } );
     }
+    
+    setFeedbackText(filteredTabs.length + " tabs bookmarked");
 }
 
 function pad(n) {
@@ -140,19 +138,10 @@ function getFormattedDate(d) {
 
 function bookmarkFilteredTabs(bookmarkBarId) {
     var dateString = getFormattedDate( new Date() );
-    
     chrome.bookmarks.create( {
         "parentId" : bookmarkBarId,
         "title"    : BOOKMARK_FOLDER_NAME + " " + dateString
-    } );
-}
-
-function bookmarkCreated(id, node) {
-    /* starts with the folder name (because we append timestamps) */
-    if (node.title.indexOf(BOOKMARK_FOLDER_NAME) === 0) {
-        addBookmarksToFolder(id);
-        setFeedbackText(filteredTabs.length + " tabs bookmarked");
-    }
+    }, addBookmarksToFolder );
 }
 
 function getIDs(nodeArray) {
@@ -177,8 +166,6 @@ function closeTabs() {
 }
 
 /* listeners */
-chrome.bookmarks.onCreated.addListener(bookmarkCreated);
-
 document.addEventListener("DOMContentLoaded", function() {
     var defaultURLs = localStorage.defaultURLs || "false";
     document.getElementById("useURLs").checked =
