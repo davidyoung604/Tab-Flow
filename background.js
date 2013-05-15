@@ -11,8 +11,8 @@
 var tabCount = 0;
 
 function printBadge(badgeText) {
-    var showBadge = localStorage["showBadge"] || "true";
-    if ( showBadge.toLowerCase().indexOf("true") != 0 ) {
+    var showBadge = localStorage.showBadge || "true";
+    if ( showBadge.toLowerCase().indexOf("true") !== 0 ) {
         badgeText = "";
     }
     

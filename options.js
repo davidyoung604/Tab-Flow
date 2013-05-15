@@ -8,17 +8,17 @@
  *             based on my code in whole or in part.
  ********************************************************/
  
- document.addEventListener("DOMContentLoaded", function() {
-    var showBadge = localStorage["showBadge"] || "true";
-    var defaultURLs = localStorage["defaultURLs"] || "false";
+document.addEventListener("DOMContentLoaded", function() {
+    var showBadge = localStorage.showBadge || "true";
+    var defaultURLs = localStorage.defaultURLs || "false";
     var showBadgeBox = document.getElementById("showBadge");
     var defaultURLsBox = document.getElementById("defaultURLs");
     
-    showBadgeBox.checked = (showBadge.toLowerCase().indexOf("true") == 0);
-    defaultURLsBox.checked = (defaultURLs.toLowerCase().indexOf("true") == 0);
+    showBadgeBox.checked = (showBadge.toLowerCase().indexOf("true") === 0);
+    defaultURLsBox.checked = (defaultURLs.toLowerCase().indexOf("true") === 0);
     
     document.getElementById("saveButton").addEventListener("click", function () {
-        localStorage["showBadge"] = showBadgeBox.checked;
-        localStorage["defaultURLs"] = defaultURLsBox.checked;
+        localStorage.showBadge = showBadgeBox.checked;
+        localStorage.defaultURLs = defaultURLsBox.checked;
     } );
 });

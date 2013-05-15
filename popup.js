@@ -48,12 +48,12 @@ function restoreWindowContainingTab( tabId, windows ) {
                 chrome.windows.update(
                     windows[winIndex].id,
                     { "focused": true },
-                    chrome.tabs.update( parseInt(tabId), { "active": true } )
+                    chrome.tabs.update( parseInt(tabId, 10), { "active": true } )
                 );
             }
         }
     }
-} 
+}
 
 function listTabs(windows) {
     var onlyCurrent = document.getElementById("onlyCurrentWindow").checked;
@@ -98,7 +98,7 @@ function parseNodesForTitle(nodeArray, searchTitle) {
 
 function getBookmarkBarId(nodeArray) {
     var bookmarkBarId = parseNodesForTitle(nodeArray, "Bookmarks Bar");
-    if (bookmarkBarId == null) {
+    if (bookmarkBarId === null) {
         /* recurse to keep parsing through the tree */
         for (i = 0; i < nodeArray.length; i++) {
             chrome.bookmarks.getChildren(nodeArray[i].id, getBookmarkBarId);
@@ -149,7 +149,7 @@ function bookmarkFilteredTabs(bookmarkBarId) {
 
 function bookmarkCreated(id, node) {
     /* starts with the folder name (because we append timestamps) */
-    if (node.title.indexOf(BOOKMARK_FOLDER_NAME) == 0) {
+    if (node.title.indexOf(BOOKMARK_FOLDER_NAME) === 0) {
         addBookmarksToFolder(id);
         setFeedbackText(filteredTabs.length + " tabs bookmarked");
     }
@@ -180,9 +180,9 @@ function closeTabs() {
 chrome.bookmarks.onCreated.addListener(bookmarkCreated);
 
 document.addEventListener("DOMContentLoaded", function() {
-    var defaultURLs = localStorage["defaultURLs"] || "false";
+    var defaultURLs = localStorage.defaultURLs || "false";
     document.getElementById("useURLs").checked =
-        ( defaultURLs.toLowerCase().indexOf("true") == 0 );
+        ( defaultURLs.toLowerCase().indexOf("true") === 0 );
     
     document.getElementById("filter").addEventListener("keyup", updateTabList);
     document.getElementById("onlyCurrentWindow").addEventListener("click", updateTabList);
@@ -190,12 +190,12 @@ document.addEventListener("DOMContentLoaded", function() {
     updateTabList();
     
     document.getElementById("bookmark").addEventListener("click", function () {
-        if (filteredTabs.length == 0) { return; }
+        if (filteredTabs.length === 0) { return; }
         chrome.bookmarks.getTree(getBookmarkBarId);
     } );
     
     document.getElementById("move").addEventListener("click", function () {
-        if (filteredTabs.length == 0) { return; }
+        if (filteredTabs.length === 0) { return; }
         chrome.windows.create( {
             "focused" : false,
             "tabId"   : filteredTabs[0].id
@@ -203,7 +203,7 @@ document.addEventListener("DOMContentLoaded", function() {
     } );
     
     document.getElementById("close").addEventListener("click", function () {
-        if (filteredTabs.length == 0) { return; }
+        if (filteredTabs.length === 0) { return; }
         closeTabs();
     } );
     
