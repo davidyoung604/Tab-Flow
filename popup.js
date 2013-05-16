@@ -12,6 +12,10 @@ var BOOKMARK_FOLDER_NAME = "Tab Flow Bookmarks";
 var WINDOW_DIV = document.getElementById("windows");
 var FEEDBACK_DIV = document.getElementById("feedback");
 
+function iterateOverList(list, func) {
+    for (var i = 0; i < list.length; i++) { func(i, list[i]); }
+}
+
 function setFeedbackText(text) {
     FEEDBACK_DIV.innerHTML = text;
 }
@@ -26,16 +30,13 @@ function tabLink(tabId, tabText) {
 }
 
 function printTabs(tabArray) {
-    var re = new RegExp(filter, "i");
-    
-    for (tabIndex = 0; tabIndex < tabArray.length; tabIndex++) {
-        var tab = tabArray[tabIndex];
+    iterateOverList(tabArray, function(index, tab) {
         var field = useURLs ? tab.url : tab.title;
-        if ( re.test(field) ) {
+        if ( regex.test(field) ) {
             filteredTabs.push(tab);
             WINDOW_DIV.innerHTML += tabLink(tab.id, field) + "<br />";
         }
-    }
+    } );
     
     allTabs = allTabs.concat(filteredTabs);
 }
@@ -58,22 +59,19 @@ function listTabs(windows) {
     filteredTabs = [];
     allTabs = [];
     
-    for (winIndex = 0; winIndex < windows.length; winIndex++) {
-        var window = windows[winIndex];
-        if (onlyCurrent && window.id != currentWindowId) { continue; }
-        WINDOW_DIV.innerHTML += windowHeader(winIndex, window.id);
-        printTabs(window.tabs);
-    }
+    iterateOverList(windows, function(index, window) {
+         if (onlyCurrent && window.id != currentWindowId) { return; }
+         WINDOW_DIV.innerHTML += windowHeader(index, window.id);
+         printTabs(window.tabs);
+    } );
     
-    /* iterate through again to add the listeners (innerHTML append wipes it out) */
-    for (i = 0; i < allTabs.length; i++) {
-        var tab = allTabs[i];
+    iterateOverList(allTabs, function(index, tab) {
         document.getElementById("" + tab.id).addEventListener("click", restoreTabFromClickEvent );
-    }
+    } );
 }
 
 function updateTabList() {
-    filter = document.getElementById("filter").value;
+    regex = new RegExp(document.getElementById("filter").value, "i");
     FEEDBACK_DIV.innerHTML = "";
     WINDOW_DIV.innerHTML = "";
     
@@ -105,7 +103,7 @@ function getBookmarkBarId(nodeArray) {
 
 function addBookmarksToFolder(bookmarkNode) {
     var folderId = bookmarkNode.id;
-    for (j = 0; j < filteredTabs.length; j++) {
+    for (var j = 0; j < filteredTabs.length; j++) {
         chrome.bookmarks.create( {
             "parentId" : folderId,
             "title"    : filteredTabs[j].title,
@@ -146,11 +144,9 @@ function bookmarkFilteredTabs(bookmarkBarId) {
 
 function getIDs(nodeArray) {
     var ids = Array();
-    
-    for (i = 0; i < nodeArray.length; i++) {
+    for (var i = 0; i < nodeArray.length; i++) {
         ids.push( nodeArray[i].id );
     }
-    
     return ids;
 }
 
