@@ -164,20 +164,20 @@ function closeTabs() {
 /* listeners */
 document.addEventListener("DOMContentLoaded", function() {
     var defaultURLs = localStorage.defaultURLs || "false";
-    document.getElementById("useURLs").checked =
+    $("useURLs").raw().checked =
         ( defaultURLs.toLowerCase().indexOf("true") === 0 );
     
-    document.getElementById("filter").addEventListener("keyup", updateTabList);
-    document.getElementById("onlyCurrentWindow").addEventListener("click", updateTabList);
-    document.getElementById("useURLs").addEventListener("click", updateTabList);
+    $("filter").on("keyup", updateTabList);
+    $("useURLs").on("click", updateTabList);
+    $("onlyCurrentWindow").on("click", updateTabList);
     updateTabList();
     
-    document.getElementById("bookmark").addEventListener("click", function () {
+    $("bookmark").on("click", function () {
         if (filteredTabs.length === 0) { return; }
         chrome.bookmarks.getTree(getBookmarkBarId);
     } );
     
-    document.getElementById("move").addEventListener("click", function () {
+    $("move").on("click", function () {
         if (filteredTabs.length === 0) { return; }
         chrome.windows.create( {
             "focused" : false,
@@ -185,7 +185,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }, moveTabsToWindow);
     } );
     
-    document.getElementById("close").addEventListener("click", function () {
+    $("close").on("click", function () {
         if (filteredTabs.length === 0) { return; }
         closeTabs();
     } );
