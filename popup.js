@@ -9,8 +9,8 @@
  ********************************************************/
 
 var BOOKMARK_FOLDER_NAME = "Tab Flow Bookmarks";
-var WINDOW_DIV = $("windows");
-var FEEDBACK_DIV = $("feedback");
+var WINDOW_DIV = $("windows").raw();
+var FEEDBACK_DIV = $("feedback").raw();
 
 function iterateOverList(list, func) {
     for (var i = 0; i < list.length; i++) { func(i, list[i]); }
