@@ -9,8 +9,8 @@
  ********************************************************/
 
 var BOOKMARK_FOLDER_NAME = "Tab Flow Bookmarks";
-var WINDOW_DIV = document.getElementById("windows");
-var FEEDBACK_DIV = document.getElementById("feedback");
+var WINDOW_DIV = $("windows");
+var FEEDBACK_DIV = $("feedback");
 
 function iterateOverList(list, func) {
     for (var i = 0; i < list.length; i++) { func(i, list[i]); }
@@ -54,8 +54,8 @@ function restoreTabFromClickEvent(event) {
 }
 
 function listTabs(windows) {
-    var onlyCurrent = document.getElementById("onlyCurrentWindow").checked;
-    useURLs = document.getElementById("useURLs").checked;
+    var onlyCurrent = $("onlyCurrentWindow").checked;
+    useURLs = $("useURLs").checked;
     filteredTabs = [];
     allTabs = [];
     
@@ -66,12 +66,12 @@ function listTabs(windows) {
     } );
     
     iterateOverList(allTabs, function(index, tab) {
-        document.getElementById("" + tab.id).addEventListener("click", restoreTabFromClickEvent );
+        $("" + tab.id).on("click", restoreTabFromClickEvent);
     } );
 }
 
 function updateTabList() {
-    regex = new RegExp(document.getElementById("filter").value, "i");
+    regex = new RegExp( $("filter").raw().value, "i" );
     FEEDBACK_DIV.innerHTML = "";
     WINDOW_DIV.innerHTML = "";
     
@@ -191,6 +191,6 @@ document.addEventListener("DOMContentLoaded", function() {
     } );
     
     window.setTimeout( function() {
-        document.getElementById("filter").focus();
+        $("filter").raw().focus();
     }, 500 );
 });

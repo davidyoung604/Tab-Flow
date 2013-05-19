@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function() {
     showBadgeBox.checked = (showBadge.toLowerCase().indexOf("true") === 0);
     defaultURLsBox.checked = (defaultURLs.toLowerCase().indexOf("true") === 0);
     
-    document.getElementById("saveButton").addEventListener("click", function () {
+    $("saveButton").on("click", function () {
         localStorage.showBadge = showBadgeBox.checked;
         localStorage.defaultURLs = defaultURLsBox.checked;
     } );
