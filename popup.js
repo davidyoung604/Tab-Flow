@@ -156,6 +156,8 @@ function moveTabsToWindow(window) {
 
 function closeTabs() {
     chrome.tabs.remove( getIDs(filteredTabs), function () {
+        $("filter").raw().value = "";
+        $("filter").raw().focus();
         updateTabList();
         setFeedbackText(filteredTabs.length + " tabs closed");
     } );
