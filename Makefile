@@ -3,7 +3,7 @@ PKG_DIR="Package/"
 
 pkg:
 	cp manifest.json $(PKG_DIR)
-	cp -r images/ $(PKG_DIR)
+	cp -r images $(PKG_DIR)
 	cp *.html $(PKG_DIR)
 	cp *.css $(PKG_DIR)
 	cp *.js $(PKG_DIR)

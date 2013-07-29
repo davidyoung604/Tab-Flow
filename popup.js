@@ -54,8 +54,8 @@ function restoreTabFromClickEvent(event) {
 }
 
 function listTabs(windows) {
-    var onlyCurrent = $("onlyCurrentWindow").checked;
-    useURLs = $("useURLs").checked;
+    var onlyCurrent = $("onlyCurrentWindow").raw().checked;
+    useURLs = $("useURLs").raw().checked;
     filteredTabs = [];
     allTabs = [];
     
