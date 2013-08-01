@@ -83,7 +83,7 @@ function updateTabList() {
 
 function parseNodesForTitle(nodeArray, searchTitle) {
     for (i = 0; i < nodeArray.length; i++) {
-        if (nodeArray[i].title === searchTitle) {
+        if (nodeArray[i].title.toLowerCase() === searchTitle.toLowerCase()) {
             return nodeArray[i].id;
         }
     }
