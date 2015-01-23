@@ -30,7 +30,7 @@ function getWindowHeader(num, winId) {
 }
 
 function getLinkForTab(tabId, tabText) {
-    return "<a href='#' id='" + tabId + "'>" + tabText + "</a>";
+    return "&gt; <a href='#' id='" + tabId + "'>" + tabText + "</a>";
 }
 
 function filterAndPrintTabLinks(tabArray) {
