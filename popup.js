@@ -12,6 +12,10 @@ var BOOKMARK_FOLDER_NAME = "Tab Flow Bookmarks";
 var WINDOW_DIV = $("windows").raw();
 var FEEDBACK_DIV = $("feedback").raw();
 
+var filteredTabs;
+var useURLs;
+var currentWindowId;
+
 function iterateOverList(list, func) {
     for (var i = 0; i < list.length; i++) { func(i, list[i]); }
 }
@@ -29,7 +33,7 @@ function getLinkForTab(tabId, tabText) {
     return "<a href='#' id='" + tabId + "'>" + tabText + "</a>";
 }
 
-function printTabs(tabArray) {
+function filterAndPrintTabLinks(tabArray) {
     iterateOverList(tabArray, function(index, tab) {
         var tabText = useURLs ? tab.url : tab.title;
         if ( regex.test(tabText) ) {
@@ -57,9 +61,9 @@ function listTabs(windows) {
     filteredTabs = [];
     
     iterateOverList(windows, function(index, window) {
-         if (onlyCurrent && window.id != currentWindowId) { return; }
-         WINDOW_DIV.innerHTML += getWindowHeader(index, window.id);
-         printTabs(window.tabs);
+        if (onlyCurrent && window.id != currentWindowId) { return; }
+        WINDOW_DIV.innerHTML += getWindowHeader(index, window.id);
+        filterAndPrintTabLinks(window.tabs);
     } );
     
     iterateOverList(filteredTabs, function(index, tab) {
