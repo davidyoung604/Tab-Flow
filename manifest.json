@@ -3,19 +3,21 @@
 
     "name": "Tab Flow",
     "version": "0.8.9",
-    
+
     "options_page": "options.html",
-    
+
     "permissions": [
         "tabs",
         "bookmarks"
     ],
-    
+
+    "description": "Tab Flow allows you the freedom to move through your tabs with ease.",
+
     "icons": {
         "48" : "images/Tab Flow (48px).png",
         "128": "images/Tab Flow (128px).png"
     },
-    
+
     "browser_action": {
         "default_title": "Tab Flow",
         "default_popup": "popup.html",
@@ -24,7 +26,7 @@
             "38"  : "images/Tab Flow (38px).png"
         }
     },
-    
+
     "background": {
         "scripts": [ "background.js" ]
     }
