@@ -20,28 +20,26 @@ function setFeedbackText(text) {
     FEEDBACK_DIV.innerHTML = text;
 }
 
-function windowHeader(num, winId) {
-    isCurrent = (winId == currentWindowId) ? " (current window)" : "";
-    return "<h3>Window " + num + isCurrent + "</h3>";
+function getWindowHeader(num, winId) {
+    var isCurrent = (winId == currentWindowId) ? " (current window)" : "";
+    return "<h3>Window " + (num + 1) + isCurrent + "</h3>";
 }
 
-function tabLink(tabId, tabText) {
+function getLinkForTab(tabId, tabText) {
     return "<a href='#' id='" + tabId + "'>" + tabText + "</a>";
 }
 
 function printTabs(tabArray) {
     iterateOverList(tabArray, function(index, tab) {
-        var field = useURLs ? tab.url : tab.title;
-        if ( regex.test(field) ) {
+        var tabText = useURLs ? tab.url : tab.title;
+        if ( regex.test(tabText) ) {
             filteredTabs.push(tab);
-            WINDOW_DIV.innerHTML += tabLink(tab.id, field) + "<br />";
+            WINDOW_DIV.innerHTML += getLinkForTab(tab.id, tabText) + "<br />";
         }
     } );
-    
-    allTabs = allTabs.concat(filteredTabs);
 }
 
-function restoreTabFromClickEvent(event) {
+function jumpToTabOnEvent(event) {
     var id = parseInt(event.target.id, 10);
     
     chrome.tabs.get( id, function(tab) {
@@ -57,16 +55,15 @@ function listTabs(windows) {
     var onlyCurrent = $("onlyCurrentWindow").raw().checked;
     useURLs = $("useURLs").raw().checked;
     filteredTabs = [];
-    allTabs = [];
     
     iterateOverList(windows, function(index, window) {
          if (onlyCurrent && window.id != currentWindowId) { return; }
-         WINDOW_DIV.innerHTML += windowHeader(index, window.id);
+         WINDOW_DIV.innerHTML += getWindowHeader(index, window.id);
          printTabs(window.tabs);
     } );
     
-    iterateOverList(allTabs, function(index, tab) {
-        $("" + tab.id).on("click", restoreTabFromClickEvent);
+    iterateOverList(filteredTabs, function(index, tab) {
+        $("" + tab.id).on("click", jumpToTabOnEvent);
     } );
 }
 
@@ -119,12 +116,12 @@ function pad(n) {
 }
 
 function getFormattedDate(d) {
-    if ( !(d instanceof Date) ) { /* damn noobs */
+    if ( !(d instanceof Date) ) {
         d = new Date();
     }
     
     var str = d.getFullYear() + "-" +
-        pad( d.getMonth()+1 ) + "-" + /* months go from 0-11. derp. */
+        pad( d.getMonth()+1 ) + "-" + /* months go from 0-11 */
         pad( d.getDate() );
     str += " " +
         pad( d.getHours() ) + ":" +
@@ -142,7 +139,7 @@ function bookmarkFilteredTabs(bookmarkBarId) {
     }, addBookmarksToFolder );
 }
 
-function getIDs(nodeArray) {
+function getIdList(nodeArray) {
     var ids = Array();
     for (var i = 0; i < nodeArray.length; i++) {
         ids.push( nodeArray[i].id );
@@ -151,11 +148,12 @@ function getIDs(nodeArray) {
 }
 
 function moveTabsToWindow(window) {
-    chrome.tabs.move( getIDs(filteredTabs), { "windowId": window.id, "index": -1 } );
+    chrome.tabs.move( getIdList(filteredTabs), { "windowId": window.id, "index": -1 } );
+    chrome.windows.update( window.id, { "focused": true } );
 }
 
 function closeTabs() {
-    chrome.tabs.remove( getIDs(filteredTabs), function () {
+    chrome.tabs.remove( getIdList(filteredTabs), function () {
         $("filter").raw().value = "";
         $("filter").raw().focus();
         updateTabList();
@@ -166,8 +164,7 @@ function closeTabs() {
 /* listeners */
 document.addEventListener("DOMContentLoaded", function() {
     var defaultURLs = localStorage.defaultURLs || "false";
-    $("useURLs").raw().checked =
-        ( defaultURLs.toLowerCase().indexOf("true") === 0 );
+    $("useURLs").raw().checked = ( defaultURLs.toLowerCase().indexOf("true") === 0 );
     
     $("filter").on("keyup", updateTabList);
     $("useURLs").on("click", updateTabList);
