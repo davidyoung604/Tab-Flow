@@ -55,12 +55,12 @@ function jumpToTabOnEvent(event) {
     } );
 }
 
-function listTabs(windows) {
+function listTabsForWindows(windowList) {
     var onlyCurrent = $("onlyCurrentWindow").raw().checked;
     useURLs = $("useURLs").raw().checked;
     filteredTabs = [];
 
-    iterateOverList(windows, function(index, window) {
+    iterateOverList(windowList, function(index, window) {
         if (onlyCurrent && window.id != currentWindowId) { return; }
         WINDOW_DIV.innerHTML += getWindowHeader(index, window.id);
         filterAndPrintTabLinks(window.tabs);
@@ -78,7 +78,7 @@ function updateTabList() {
 
     chrome.windows.getCurrent( function (window) {
         currentWindowId = window.id;
-        chrome.windows.getAll( { "populate": true }, listTabs );
+        chrome.windows.getAll( { "populate": true }, listTabsForWindows );
     } );
 }
 
