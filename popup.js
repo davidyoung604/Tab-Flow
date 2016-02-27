@@ -45,7 +45,7 @@ function filterAndPrintTabLinks(tabArray) {
 
 function jumpToTabOnEvent(event) {
     var id = parseInt(event.target.id, 10);
-    
+
     chrome.tabs.get( id, function(tab) {
         chrome.windows.update(
             tab.windowId,
@@ -59,13 +59,13 @@ function listTabs(windows) {
     var onlyCurrent = $("onlyCurrentWindow").raw().checked;
     useURLs = $("useURLs").raw().checked;
     filteredTabs = [];
-    
+
     iterateOverList(windows, function(index, window) {
         if (onlyCurrent && window.id != currentWindowId) { return; }
         WINDOW_DIV.innerHTML += getWindowHeader(index, window.id);
         filterAndPrintTabLinks(window.tabs);
     } );
-    
+
     iterateOverList(filteredTabs, function(index, tab) {
         $("" + tab.id).on("click", jumpToTabOnEvent);
     } );
@@ -75,7 +75,7 @@ function updateTabList() {
     regex = new RegExp( $("filter").raw().value, "i" );
     FEEDBACK_DIV.innerHTML = "";
     WINDOW_DIV.innerHTML = "";
-    
+
     chrome.windows.getCurrent( function (window) {
         currentWindowId = window.id;
         chrome.windows.getAll( { "populate": true }, listTabs );
@@ -95,11 +95,20 @@ function getBookmarkBarId(nodeArray) {
     if (bookmarkBarId === null || bookmarkBarId === undefined) {
         /* recurse to keep parsing through the tree */
         for (i = 0; i < nodeArray.length; i++) {
-            chrome.bookmarks.getChildren(nodeArray[i].id, getBookmarkBarId);
+            chrome.bookmarks.getChildren(nodeArray[i].id, bookmarkFilteredTabs);
         }
     } else {
-        bookmarkFilteredTabs(bookmarkBarId);
+        return bookmarkBarId;
     }
+}
+
+function bookmarkFilteredTabs(nodeArray) {
+    bookmarkBarId = getBookmarkBarId(nodeArray);
+    var dateString = getFormattedDate( new Date() );
+    chrome.bookmarks.create( {
+        "parentId" : bookmarkBarId,
+        "title"    : BOOKMARK_FOLDER_NAME + " " + dateString
+    }, addBookmarksToFolder );
 }
 
 function addBookmarksToFolder(bookmarkNode) {
@@ -111,7 +120,7 @@ function addBookmarksToFolder(bookmarkNode) {
             "url"      : filteredTabs[j].url
         } );
     }
-    
+
     setFeedbackText(filteredTabs.length + " tabs bookmarked");
 }
 
@@ -123,7 +132,7 @@ function getFormattedDate(d) {
     if ( !(d instanceof Date) ) {
         d = new Date();
     }
-    
+
     var str = d.getFullYear() + "-" +
         pad( d.getMonth()+1 ) + "-" + /* months go from 0-11 */
         pad( d.getDate() );
@@ -131,16 +140,8 @@ function getFormattedDate(d) {
         pad( d.getHours() ) + ":" +
         pad( d.getMinutes() ) + ":" +
         pad( d.getSeconds() );
-    
-    return str;
-}
 
-function bookmarkFilteredTabs(bookmarkBarId) {
-    var dateString = getFormattedDate( new Date() );
-    chrome.bookmarks.create( {
-        "parentId" : bookmarkBarId,
-        "title"    : BOOKMARK_FOLDER_NAME + " " + dateString
-    }, addBookmarksToFolder );
+    return str;
 }
 
 function getIdList(nodeArray) {
@@ -169,17 +170,17 @@ function closeTabs() {
 document.addEventListener("DOMContentLoaded", function() {
     var defaultURLs = localStorage.defaultURLs || "false";
     $("useURLs").raw().checked = ( defaultURLs.toLowerCase().indexOf("true") === 0 );
-    
+
     $("filter").on("keyup", updateTabList);
     $("useURLs").on("click", updateTabList);
     $("onlyCurrentWindow").on("click", updateTabList);
     updateTabList();
-    
+
     $("bookmark").on("click", function () {
         if (filteredTabs.length === 0) { return; }
-        chrome.bookmarks.getTree(getBookmarkBarId);
+        chrome.bookmarks.getTree(bookmarkFilteredTabs);
     } );
-    
+
     $("move").on("click", function () {
         if (filteredTabs.length === 0) { return; }
         chrome.windows.create( {
@@ -187,12 +188,12 @@ document.addEventListener("DOMContentLoaded", function() {
             "tabId"   : filteredTabs[0].id
         }, moveTabsToWindow);
     } );
-    
+
     $("close").on("click", function () {
         if (filteredTabs.length === 0) { return; }
         closeTabs();
     } );
-    
+
     window.setTimeout( function() {
         $("filter").raw().focus();
     }, 500 );
