@@ -124,7 +124,7 @@ function addBookmarksToFolder(bookmarkNode) {
     setFeedbackText(filteredTabs.length + " tabs bookmarked");
 }
 
-function pad(n) {
+function padIfLtTen(n) {
     return (n > 9) ? n : "0" + n;
 }
 
@@ -134,12 +134,12 @@ function getFormattedDate(d) {
     }
 
     var str = d.getFullYear() + "-" +
-        pad( d.getMonth()+1 ) + "-" + /* months go from 0-11 */
-        pad( d.getDate() );
+        padIfLtTen( d.getMonth()+1 ) + "-" + /* months go from 0-11 */
+        padIfLtTen( d.getDate() );
     str += " " +
-        pad( d.getHours() ) + ":" +
-        pad( d.getMinutes() ) + ":" +
-        pad( d.getSeconds() );
+        padIfLtTen( d.getHours() ) + ":" +
+        padIfLtTen( d.getMinutes() ) + ":" +
+        padIfLtTen( d.getSeconds() );
 
     return str;
 }
