@@ -24,23 +24,37 @@ function setFeedbackText(text) {
     FEEDBACK_DIV.innerHTML = text;
 }
 
-function getWindowHeader(num, winId) {
-    var isCurrent = (winId == currentWindowId) ? " (current window)" : "";
-    return "<h3>Window " + (num + 1) + isCurrent + "</h3>";
+function getWindowHeaderHtml(num, window, numTabs) {
+    var curWindowMarker = (window.id == currentWindowId) ? " (current window)" : "";
+    return "<h3>Window " + (num + 1) + ": (" + numTabs + ")" + curWindowMarker + "</h3>";
 }
 
 function getLinkForTab(tabId, tabText) {
     return "&gt; <a href='#' id='" + tabId + "'>" + tabText + "</a>";
 }
 
-function filterAndPrintTabLinks(tabArray) {
+function filterTabs(tabArray) {
+    var tempTabs = [];
+
     iterateOverList(tabArray, function(index, tab) {
         var tabText = useURLs ? tab.url : tab.title;
         if ( regex.test(tabText) ) {
-            filteredTabs.push(tab);
-            WINDOW_DIV.innerHTML += getLinkForTab(tab.id, tabText) + "<br />";
+            tempTabs.push(tab);
         }
     } );
+
+    return tempTabs;
+}
+
+function getTabLinkHtml(tabArray) {
+    var html = "";
+
+    iterateOverList(tabArray, function(index, tab) {
+        var tabText = useURLs ? tab.url : tab.title;
+        html += getLinkForTab(tab.id, tabText) + "<br />";
+    } );
+
+    return html;
 }
 
 function jumpToTabOnEvent(event) {
@@ -62,8 +76,11 @@ function listTabsForWindows(windowList) {
 
     iterateOverList(windowList, function(index, window) {
         if (onlyCurrent && window.id != currentWindowId) { return; }
-        WINDOW_DIV.innerHTML += getWindowHeader(index, window.id);
-        filterAndPrintTabLinks(window.tabs);
+        var filtered = filterTabs(window.tabs);
+        filteredTabs = filteredTabs.concat(filtered);
+        var tabLinkHtml = getTabLinkHtml(filtered);
+        WINDOW_DIV.innerHTML += getWindowHeaderHtml(index, window, filtered.length);
+        WINDOW_DIV.innerHTML += tabLinkHtml;
     } );
 
     iterateOverList(filteredTabs, function(index, tab) {
