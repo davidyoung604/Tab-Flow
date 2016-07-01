@@ -99,28 +99,25 @@ function updateTabList() {
     } );
 }
 
-function parseNodesForTitle(nodeArray, searchTitle) {
-    for (i = 0; i < nodeArray.length; i++) {
-        if (nodeArray[i].title.toLowerCase() === searchTitle.toLowerCase()) {
-            return nodeArray[i].id;
-        }
-    }
-}
+function getBookmarkFolderId(nodeArray, folderName) {
+    for (i = 0; i < nodeArray.length; i++) { // NOTE: nodeArray will grow
+        node = nodeArray[i];
 
-function getBookmarkBarId(nodeArray) {
-    var bookmarkBarId = parseNodesForTitle(nodeArray, "Bookmarks Bar");
-    if (bookmarkBarId === null || bookmarkBarId === undefined) {
-        /* recurse to keep parsing through the tree */
-        for (i = 0; i < nodeArray.length; i++) {
-            chrome.bookmarks.getChildren(nodeArray[i].id, bookmarkFilteredTabs);
+        if ((node.url === null || node.url === undefined) && // just in case some goober names a bookmark 'Bookmarks Bar'
+            node.title.toLowerCase() === folderName.toLowerCase()) {
+            return node.id;
         }
-    } else {
-        return bookmarkBarId;
+
+        if (node.children != null) {
+            nodeArray = nodeArray.concat(node.children);
+        }
     }
+
+    return null; // couldn't find it. put in "Other Bookmarks" instead
 }
 
 function bookmarkFilteredTabs(nodeArray) {
-    bookmarkBarId = getBookmarkBarId(nodeArray);
+    bookmarkBarId = getBookmarkFolderId(nodeArray, "Bookmarks Bar");
     var dateString = getFormattedDate( new Date() );
     chrome.bookmarks.create( {
         "parentId" : bookmarkBarId,
