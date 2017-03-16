@@ -14,6 +14,7 @@ var FEEDBACK_DIV = $("feedback").raw();
 
 var filteredTabs;
 var useURLs;
+var hideDiscarded;
 var currentWindowId;
 
 function iterateOverList(list, func) {
@@ -38,10 +39,10 @@ function filterTabs(tabArray) {
 
     iterateOverList(tabArray, function(index, tab) {
         var tabText = useURLs ? tab.url : tab.title;
-        if ( regex.test(tabText) ) {
+        if ( regex.test(tabText) && (!hideDiscarded || !tab.discarded) ) {
             tempTabs.push(tab);
         }
-    } );
+    });
 
     return tempTabs;
 }
@@ -52,7 +53,7 @@ function getTabLinkHtml(tabArray) {
     iterateOverList(tabArray, function(index, tab) {
         var tabText = useURLs ? tab.url : tab.title;
         html += getLinkForTab(tab.id, tabText) + "<br />";
-    } );
+    });
 
     return html;
 }
@@ -64,14 +65,15 @@ function jumpToTabOnEvent(event) {
         chrome.windows.update(
             tab.windowId,
             { "focused": true },
-            chrome.tabs.update( id, { "active": true } )
+            chrome.tabs.update( id, { "active": true })
         );
-    } );
+    });
 }
 
 function listTabsForWindows(windowList) {
     var onlyCurrent = $("onlyCurrentWindow").raw().checked;
     useURLs = $("useURLs").raw().checked;
+    hideDiscarded = $("hideDiscarded").raw().checked;
     filteredTabs = [];
 
     iterateOverList(windowList, function(index, window) {
@@ -81,11 +83,11 @@ function listTabsForWindows(windowList) {
         var tabLinkHtml = getTabLinkHtml(filtered);
         WINDOW_DIV.innerHTML += getWindowHeaderHtml(index, window, filtered.length);
         WINDOW_DIV.innerHTML += tabLinkHtml;
-    } );
+    });
 
     iterateOverList(filteredTabs, function(index, tab) {
         $("" + tab.id).on("click", jumpToTabOnEvent);
-    } );
+    });
 }
 
 function updateTabList() {
@@ -96,7 +98,7 @@ function updateTabList() {
     chrome.windows.getCurrent( function (window) {
         currentWindowId = window.id;
         chrome.windows.getAll( { "populate": true }, listTabsForWindows );
-    } );
+    });
 }
 
 function getBookmarkFolderId(nodeArray, folderName) {
@@ -132,7 +134,7 @@ function addBookmarksToFolder(bookmarkNode) {
             "parentId" : folderId,
             "title"    : filteredTabs[j].title,
             "url"      : filteredTabs[j].url
-        } );
+        });
     }
 
     setFeedbackText(filteredTabs.length + " tabs bookmarked");
@@ -167,17 +169,30 @@ function getIdList(nodeArray) {
 }
 
 function moveTabsToWindow(window) {
-    chrome.tabs.move( getIdList(filteredTabs), { "windowId": window.id, "index": -1 } );
-    chrome.windows.update( window.id, { "focused": true } );
+    chrome.tabs.move( getIdList(filteredTabs), { "windowId": window.id, "index": -1 });
+    chrome.windows.update( window.id, { "focused": true });
+}
+
+function discardTabs() {
+    var tabIds = getIdList(filteredTabs);
+    for (var i = 0; i < tabIds.length; i++) {
+        chrome.tabs.get(tabIds[i], function(tab) {
+            if (!tab.discarded) {
+                chrome.tabs.discard(tab.id);
+            }
+        });
+    }
+    updateTabList();
+    setFeedbackText(filteredTabs.length + " tabs discarded");
 }
 
 function closeTabs() {
-    chrome.tabs.remove( getIdList(filteredTabs), function () {
+    chrome.tabs.remove( getIdList(filteredTabs), function() {
         $("filter").raw().value = "";
         $("filter").raw().focus();
         updateTabList();
         setFeedbackText(filteredTabs.length + " tabs closed");
-    } );
+    });
 }
 
 /* listeners */
@@ -188,25 +203,31 @@ document.addEventListener("DOMContentLoaded", function() {
     $("filter").on("keyup", updateTabList);
     $("useURLs").on("click", updateTabList);
     $("onlyCurrentWindow").on("click", updateTabList);
+    $("hideDiscarded").on("click", updateTabList);
     updateTabList();
 
-    $("bookmark").on("click", function () {
+    $("bookmark").on("click", function() {
         if (filteredTabs.length === 0) { return; }
         chrome.bookmarks.getTree(bookmarkFilteredTabs);
-    } );
+    });
 
-    $("move").on("click", function () {
+    $("move").on("click", function() {
         if (filteredTabs.length === 0) { return; }
         chrome.windows.create( {
             "focused" : false,
             "tabId"   : filteredTabs[0].id
         }, moveTabsToWindow);
-    } );
+    });
 
-    $("close").on("click", function () {
+    $("discard").on("click", function() {
+        if (filteredTabs.length === 0) { return; }
+        discardTabs();
+    })
+
+    $("close").on("click", function() {
         if (filteredTabs.length === 0) { return; }
         closeTabs();
-    } );
+    });
 
     window.setTimeout( function() {
         $("filter").raw().focus();

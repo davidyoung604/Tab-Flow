@@ -7,12 +7,13 @@
  *             but you are not permitted to release anything
  *             based on my code in whole or in part.
  ********************************************************/
- 
+
 body {
     background: #eee;
     color: #333;
     font-family: Monda, Verdana;
     font-size: 11pt;
+    padding-right: 20px;
 }
 
 a {
