@@ -15,23 +15,25 @@ function printBadge(badgeText) {
     if ( showBadge.toLowerCase().indexOf("true") !== 0 ) {
         badgeText = "";
     }
-    
+
     chrome.browserAction.setBadgeText( { "text": badgeText } );
 }
 
-chrome.windows.getAll( { "populate": true }, function (windows) {
-    for (i = 0; i < windows.length; i++) {
-        tabCount += windows[i].tabs.length;
-    }
-    
-    printBadge("" + tabCount);
-} );
+function tallyTabs() {
+    chrome.windows.getAll( { "populate": true }, function (windows) {
+        tabCount = windows.reduce(
+            (count, window) => count + window.tabs.length,
+            0
+        );
+        printBadge("" + tabCount);
+    });
+}
+
+tallyTabs();
 
 chrome.tabs.onCreated.addListener( function (a) {
-    tabCount++;
-    printBadge("" + tabCount);
+    tallyTabs();
 } );
 chrome.tabs.onRemoved.addListener( function (a, b) {
-    tabCount--;
-    printBadge("" + tabCount);
+    tallyTabs();
 } );
